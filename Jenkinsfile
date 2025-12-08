@@ -26,5 +26,10 @@ pipeline {
                 echo "Deploying (demo stage)..."
             }
         }
+         stage('Deploy') {
+            steps {
+                echo "Deploying (demo stage)..."
+            }
+        }
     }
 }
