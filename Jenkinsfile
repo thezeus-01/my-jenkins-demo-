@@ -2,25 +2,25 @@ pipeline {
     agent any
 
     environment {
-        GIT_REPO = 'https://github.com/USERNAME/REPO_NAME.git'
-        BRANCH   = 'main'
+        APP_NAME = "newdem-app"
     }
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo "Cloning source code from GitHub..."
-                git branch: "${BRANCH}", url: "${GIT_REPO}"
+                echo "Source code already checked out by SCM"
+                sh 'ls -la'
             }
         }
 
         stage('Build') {
             steps {
-                echo "Building the project..."
+                echo "Building the application..."
                 sh '''
-                    echo "Build step running"
-                    ls -la
+                    echo "Simulating build process"
+                    mkdir -p build
+                    echo "Build successful for $APP_NAME" > build/build.txt
                 '''
             }
         }
@@ -29,8 +29,16 @@ pipeline {
             steps {
                 echo "Running tests..."
                 sh '''
-                    echo "Test step running"
+                    echo "Running sample test"
+                    test -f build/build.txt
                 '''
+            }
+        }
+
+        stage('Archive') {
+            steps {
+                echo "Archiving build artifacts"
+                archiveArtifacts artifacts: 'build/**', fingerprint: true
             }
         }
 
@@ -38,7 +46,7 @@ pipeline {
             steps {
                 echo "Deploying application..."
                 sh '''
-                    echo "Deploy step running"
+                    echo "Deploy step completed"
                 '''
             }
         }
@@ -46,11 +54,13 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline executed successfully"
+            echo "Pipeline completed successfully"
         }
         failure {
             echo "Pipeline failed"
         }
+        always {
+            echo "Pipeline execution finished"
+        }
     }
 }
-
